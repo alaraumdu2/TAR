@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarot Kart Seçimi</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            overflow: hidden;
+            transition: opacity 1s ease-out;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .site-title {
+            font-size: 48px; /* 2 katı büyütüldü */
+            font-weight: bold;
+            margin-bottom: 40px; /* Daha fazla boşluk */
+            padding: 20px;
+            background-color: #fddfde; /* Çok açık soft pembe */
+            border-radius: 8px;
+        }
+
+        .choice-container {
+            display: flex;
+            flex-direction: column;
+            width: 200px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            z-index: 1; /* Ensure container is above sparkle */
+        }
+
+        .choice {
+            padding: 10px;
+            border: 2px solid #000;
+            margin-bottom: 15px; /* Daha fazla boşluk */
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.3s, border-color 0.3s;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #loveThreeCards {
+            margin-top: 30px;
+        }
+
+        .choice.selected {
+            background-color: #c7e2ff;
+            border-color: #007bff;
+        }
+
+        .tooltip {
+            display: none;
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #000;
+            color: #fff;
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 14px;
+            white-space: nowrap;
+            z-index: 1;
+        }
+
+        .choice:hover .tooltip {
+            display: block;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(255,182,193,0) 0%, rgba(255,182,193,0.6) 50%, rgba(255,182,193,0) 100%);
+            opacity: 0;
+            transition: opacity 1s ease-out;
+            z-index: 10;
+        }
+
+        .sparkle.active {
+            opacity: 1;
+            animation: sparkle 1s ease-out;
+        }
+
+        @keyframes sparkle {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .fade {
+            opacity: 1;
+            transition: opacity 1s ease-out;
+        }
+
+        .fade.fade-out {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="fade">
+
+<div class="container">
+    <div class="site-title">TAROTLAB</div>
+    <div class="choice-container">
+        <div class="choice" id="loveSingleCard">Aşk açılımı tek kart</div>
+        <div class="choice" id="careerSingleCard">Kariyer açılımı tek kart</div>
+        <div class="choice" id="moneySingleCard">Para açılımı tek kart</div>
+        
+        <div class="choice" id="loveThreeCards">Aşk açılımı 3 kart</div>
+        <div class="choice" id="careerThreeCards">Kariyer açılımı 3 kart</div>
+        <div class="choice" id="moneyThreeCards">Para açılımı 3 kart</div>
+    </div>
+</div>
+
+<div class="sparkle"></div>
+
+<script>
+    function transitionToPage(url) {
+        const sparkle = document.querySelector('.sparkle');
+        const body = document.querySelector('body');
+        sparkle.classList.add('active');
+        body.classList.add('fade-out');
+        
+        setTimeout(function() {
+            window.location.href = url;
+        }, 1000); // Parıldama süresi ile aynı
+    }
+
+    document.getElementById('loveSingleCard').addEventListener('click', function() {
+        transitionToPage('asktekkart.html');
+    });
+
+    document.getElementById('careerSingleCard').addEventListener('click', function() {
+        transitionToPage('kariyertekkart.html');
+    });
+
+    document.getElementById('moneySingleCard').addEventListener('click', function() {
+        transitionToPage('paratekkart.html');
+    });
+
+    document.getElementById('loveThreeCards').addEventListener('click', function() {
+        transitionToPage('ask3kart.html');
+    });
+
+    document.getElementById('careerThreeCards').addEventListener('click', function() {
+        transitionToPage('kariyer3kart.html');
+    });
+
+    document.getElementById('moneyThreeCards').addEventListener('click', function() {
+        transitionToPage('para3kart.html');
+    });
+</script>
+
+</body>
+</html>	
