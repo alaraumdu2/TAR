@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarot Kartları</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 50px;
+    /* Eklemeler */
+    justify-content: center; /* Kartları ortalamak için */
+}
+
+.card {
+    width: 60px; /* Kart genişliği */
+    height: 90px; /* Kart yüksekliği */
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+    transform: rotateY(0deg);
+    margin: 1px; /* Kartlar arasındaki boşluk */
+    cursor: pointer; /* Tıklanabilir */
+    box-sizing: border-box; /* Padding ve border'ı kartın genişliğine dahil et */
+}
+
+/* Yanlış CSS özellikleriyle ilgili bazı olası sorunları ortadan kaldırmak için */
+.card.flip {
+    transform: rotateY(180deg);
+    transition: transform 0.6s;
+}
+
+        .card .front, .card .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            text-align: center;
+            padding: 5px;
+        }
+
+        .card .front {
+            background: url('images/backai.jpg') no-repeat center center;
+            background-size: cover;
+            color: transparent; /* Ön yüzde yazı görünmez */
+        }
+
+        .card .back {
+            background: #fff;
+            color: #000;
+            transform: rotateY(180deg);
+        }
+
+        .description {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: none; /* Başlangıçta gizli */
+        }
+
+        .description.active {
+            display: block;
+        }
+
+        .description h2 {
+            margin-top: 0;
+        }
+
+        .description p {
+            margin: 5px 0;
+        }
+
+        .reset-button {
+            position: absolute;
+            left: 50px; /* Sayfanın sağından 50px uzaklıkta */
+            top: 530px; /* Üstten 20px uzaklıkta */
+            padding: 10px 30px;
+            font-size: 17px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #910606;
+            color: #fff;
+            transition: background-color 0.3s;
+			
+        }
+
+        .reset-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card-container">
+    <!-- 78 tarot kartı kutucuğu oluşturuluyor -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const numberOfCards = 78;
+            const cardNames = [
+                'The Fool', 'The Magician', 'The High Priestess', 'The Empress', 'The Emperor',
+                'The Hierophant', 'The Lovers', 'The Chariot', 'Strength', 'The Hermit',
+                'Wheel of Fortune', 'Justice', 'The Hanged Man', 'Death', 'Temperance',
+                'The Devil', 'The Tower', 'The Star', 'The Moon', 'The Sun',
+                'Judgement', 'The World', 'Ace of Wands', 'Two of Wands', 'Three of Wands',
+                'Four of Wands', 'Five of Wands', 'Six of Wands', 'Seven of Wands', 'Eight of Wands',
+                'Nine of Wands', 'Ten of Wands', 'Page of Wands', 'Knight of Wands', 'Queen of Wands',
+                'King of Wands', 'Ace of Cups', 'Two of Cups', 'Three of Cups', 'Four of Cups',
+                'Five of Cups', 'Six of Cups', 'Seven of Cups', 'Eight of Cups', 'Nine of Cups',
+                'Ten of Cups', 'Page of Cups', 'Knight of Cups', 'Queen of Cups', 'King of Cups',
+                'Ace of Swords', 'Two of Swords', 'Three of Swords', 'Four of Swords', 'Five of Swords',
+                'Six of Swords', 'Seven of Swords', 'Eight of Swords', 'Nine of Swords', 'Ten of Swords',
+                'Page of Swords', 'Knight of Swords', 'Queen of Swords', 'King of Swords',
+                'Ace of Pentacles', 'Two of Pentacles', 'Three of Pentacles', 'Four of Pentacles',
+                'Five of Pentacles', 'Six of Pentacles', 'Seven of Pentacles', 'Eight of Pentacles',
+                'Nine of Pentacles', 'Ten of Pentacles', 'Page of Pentacles', 'Knight of Pentacles',
+                'Queen of Pentacles', 'King of Pentacles'
+            ];
+
+            // Her kart için açıklama verileri
+            const cardDescriptions = {
+                'The Fool': {
+                    AŞK: 'Aşkta yeni başlangıçlar ve serüvenler.',
+                    KARİYER: 'Kariyerinizde yeni fırsatlar ve riskler.',
+                    PARA: 'Maddi olarak cesur adımlar atılabilir.',
+                    ARKADAŞLIK: 'Yeni arkadaşlıklar ve keşifler.'
+                },
+                'The Magician': {
+                    AŞK: 'Aşkta yaratıcılığın ve sihrin dönemi.',
+                    KARİYER: 'Kariyerinizde yeteneklerinizi kullanarak başarılı olabilirsiniz.',
+                    PARA: 'Maddi olarak fırsatlar ve yeni projeler.',
+                    ARKADAŞLIK: 'Sosyal çevrenizde etkili ve ilham verici ilişkiler.'
+                },
+                // Diğer kartlar için açıklamalar buraya eklenecek...
+            };
+
+            const container = document.querySelector('.card-container');
+            const description = document.createElement('div');
+            description.className = 'description';
+            description.innerHTML = '<p>Lütfen içinizden sorunuzu sorup üç kart seçiniz.</p>';
+            document.body.appendChild(description);
+
+            const resetButton = document.createElement('button');
+            resetButton.className = 'reset-button';
+            resetButton.textContent = 'Kartları Karıştır';
+            document.body.appendChild(resetButton);
+
+            const selectedCards = new Set();
+
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            }
+
+            function initializeCards() {
+                shuffleArray(cardNames);
+                container.innerHTML = ''; // Kartları temizle
+
+                for (let i = 0; i < numberOfCards; i++) {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.dataset.name = cardNames[i];
+                    card.dataset.index = i;
+
+                    card.addEventListener('click', function () {
+                        if (selectedCards.size < 3 || selectedCards.has(card)) {
+                            if (card.classList.contains('flip')) {
+                                card.classList.remove('flip');
+                                selectedCards.delete(card);
+                            } else {
+                                card.classList.add('flip');
+                                selectedCards.add(card);
+                            }
+
+                            if (selectedCards.size === 3) {
+                                const cardArray = Array.from(selectedCards);
+                                const cardDescriptionsText = cardArray.map(c => {
+                                    const cardName = c.dataset.name;
+                                    const descriptions = cardDescriptions[cardName] || {
+                                        AŞK: 'Açıklama mevcut değil.',
+                                        KARİYER: 'Açıklama mevcut değil.',
+                                        PARA: 'Açıklama mevcut değil.',
+                                        ARKADAŞLIK: 'Açıklama mevcut değil.'
+                                    };
+                                    return `
+                                        <h2>${cardName}</h2>
+                                        <p><strong>AŞK:</strong> ${descriptions.AŞK}</p>
+                                        <p><strong>KARİYER:</strong> ${descriptions.KARİYER}</p>
+                                        <p><strong>PARA:</strong> ${descriptions.PARA}</p>
+                                        <p><strong>ARKADAŞLIK:</strong> ${descriptions.ARKADAŞLIK}</p>
+                                    `;
+                                }).join('<hr>');
+
+                                description.innerHTML = cardDescriptionsText;
+                                description.classList.add('active');
+                            } else {
+                                description.classList.remove('active');
+                                description.innerHTML = '<p>Lütfen içinizden sorunuzu sorup üç kart seçiniz.</p>';
+                            }
+                        }
+                    });
+
+                    const front = document.createElement('div');
+                    front.className = 'front';
+
+                    const back = document.createElement('div');
+                    back.className = 'back';
+                    back.textContent = cardNames[i];
+
+                    card.appendChild(front);
+                    card.appendChild(back);
+                    container.appendChild(card);
+                }
+            }
+
+            resetButton.addEventListener('click', function () {
+                selectedCards.clear();
+                description.classList.remove('active');
+                description.innerHTML = '<p>Lütfen içinizden sorunuzu sorup üç kart seçiniz.</p>';
+                initializeCards(); // Kartları yeniden başlat
+            });
+
+            initializeCards(); // İlk kartları başlat
+        });
+    </script>
+</div>
+
+</body>
+</html>
