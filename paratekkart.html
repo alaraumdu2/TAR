@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarot Kartları</title>
+    <style>
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 20px; /* Kenarlardan boşluk ekler */
+    background: #f0f0f0;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box; /* Padding ve border'ların box modeline dahil olmasını sağlar */
+}
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .site-title {
+            font-size: 48px; /* 2 katı büyütüldü */
+            font-weight: bold;
+            margin-bottom: 20px; /* Daha fazla boşluk */
+            padding: 20px;
+            background-color: #fddfde; /* Çok açık soft pembe */
+            border-radius: 8px;
+        }
+		
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Kartları ortalar */
+    margin: 0; /* Önceki margin'i kaldırdık */
+    width: calc(100% - 40px); /* Sağdan ve soldan 20px boşluk bırakır */
+    max-width: 800px; /* Maksimum genişliği ayarlayın */
+	margin-top: 70px;
+}
+
+.card {
+    width: 50px; /* Kart genişliği */
+    height: 70px; /* Kart yüksekliği */
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s, box-shadow 0.3s;
+    margin: -7px; /* Kartlar arasındaki boşluğu azaltır ve üst üste binmelerini sağlar */
+    cursor: pointer; /* Tıklanabilir */
+
+}
+
+.card.selected {
+    z-index: 10; /* Seçili kartın diğerlerinin önünde görünmesini sağlar */
+    transform: translateY(-20px) scale(1.2); /* Kartı 20px yukarı kaydırır ve büyütür */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7); /* Seçili kartın etrafında belirgin gölge */
+}
+
+.card .front, .card .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px; /* Yazı boyutunu küçült */
+    text-align: center;
+    padding: 5px;
+}
+
+.card .front {
+    background: url('images/backai.jpg') no-repeat center center;
+    background-size: cover;
+    color: transparent; /* Ön yüzde yazı görünmez */
+}
+
+.card .back {
+    background: #fff;
+    color: #000;
+    transform: rotateY(180deg);
+}
+
+.description {
+    width: 80%;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: none; /* Başlangıçta gizli */
+}
+
+.description.active { 
+    display: block;
+}
+
+.description h2 {
+    margin-top: 0;
+}
+
+.description p {
+    margin: 5px 0;
+}
+
+.reset-button {
+    position: relative; /* Mutlak yerine göreceli pozisyonlama */
+    padding: 10px 30px;
+    font-size: 17px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #910606;
+    color: #fff;
+    transition: background-color 0.3s;
+    margin-top: 40px; /* Butonun üst kısmında boşluk bırakır */
+}
+
+.reset-button:hover {
+    background-color: #0056b3;
+}
+			
+    </style>
+</head>
+<body>
+
+   <div class="site-title">TAROTLAB</div>
+	<div class="card-container">
+    <!-- 78 tarot kartı kutucuğu oluşturuluyor -->
+     </div>
+ </DIV>
+
+
+<button class="reset-button">Kartları Karıştır</button>
+
+<div class="description">
+    <p>Lütfen içinizden sorunuzu sorup bir kart seçiniz.</p>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const numberOfCards = 78;
+    const cardNames = [
+        'JOKER', 'BÜYÜCÜ', 'AZİZE', 'İMPARATORİÇE', 'İMPARATOR',
+        'AZİZ', 'AŞIKLAR', 'ARABA', 'GÜÇ', 'ERMİŞ',
+        'KADER ÇARKI', 'ADALET', 'ASILAN ADAM', 'ÖLÜM', 'DENGE',
+        'ŞEYTAN', 'YIKILAN KULE', 'YILDIZ', 'AY', 'GÜNEŞ',
+        'MAHKEME', 'DÜNYA', 'DEĞNEK ASI', 'DEĞNEK İKİLİSİ', 'DEĞNEK ÜÇLÜSÜ',
+        'DEĞNEK DÖRTLÜSÜ', 'DEĞNEK BEŞLİSİ', 'DEĞNEK ALTILISI', 'DEĞNEK YEDİLİSİ', 'DEĞNEK SEKİZLİSİ',
+        'DEĞNEK DOKUZLUSU', 'DEĞNEK ONLUSU', 'DEĞNEK PRENSİ', 'DEĞNEK ŞÖVALYESİ', 'DEĞNEK KRALİÇESİ',
+        'DEĞNEK KRALI', 'KUPA ASI', 'KUPA İKİSİ', 'KUPA ÜÇLÜSÜ', 'KUPA DÖRTLÜSÜ',
+        'KUPA BEŞLİSİ', 'KUPA ALTILISI', 'KUPA YEDİLİSİ', 'KUPA SEKİZLİSİ', 'KUPA DOKUZLUSU',
+        'KUPA ONLUSU', 'KUPA PRENSİ', 'KUPA ŞÖVALYESİ', 'KUPA KRALİÇESİ', 'KUPA KRALI',
+        'KILIÇ ASI', 'KILIÇ İKİLİSİ', 'KILIÇ ÜÇLÜSÜ', 'KILIÇ DÖRTLÜSÜ', 'KILIÇ BEŞLİSİ',
+        'KILIÇ ALTILISI', 'KILIÇ YEDİLİSİ', 'KILIÇ SEKİZLİSİ', 'KILIÇ DOKUZLUSU', 'KILIÇ ONLUSU',
+        'KILIÇ PRENSİ', 'KILIÇ ŞÖVALYESİ', 'KILIÇ KRALİÇESİ', 'KILIÇ KRALI',
+        'PARA ASI', 'PARA İKİLİSİ', 'PARA ÜÇLÜSÜ', 'PARA DÖRTLÜSÜ',
+        'PARA BEŞLİSİ', 'PARA ALTILISI', 'PARA YEDİLİSİ', 'PARA SEKİZLİSİ',
+        'PARA DOKUZLUSU', 'PARA ONLUSU', 'PARA PRENSİ', 'PARA ŞÖVALYESİ',
+        'PARA KRALİÇESİ', 'PARA KRALI'
+    ];
+
+        // Her kart için açıklama verileri
+        const cardDescriptions = {
+    'JOKER': {
+        'PARA': 'Finansal riskleri göze alın, yenilikçi fırsatları değerlendirin. Yenilikçi ve sıra dışı finansal çözümler aramanız gereken bir dönemde olabilirsiniz. Risk alarak yeni fırsatlar yaratabilirsiniz. Bu süreç, size alışılmışın dışında bir başarı getirebilir.',
+    },
+    'BÜYÜCÜ': {
+        'PARA': 'Yaratıcı finansal çözümler bulun, potansiyelinizi kullanın. Finansal anlamda yaratıcılığınızı ve yeteneklerinizi kullanarak yeni fırsatlar yaratabilirsiniz. Kendi potansiyelinize güvenin ve finansal başarılarınızı şekillendirin. Sihirli bir dokunuşla hedeflerinize ulaşabilirsiniz.',
+    },
+     'AZİZE': {
+        'PARA': 'İçgörülerinizle karar verin, gizli fırsatları keşfedin. Para konularında ruhsal ve manevi bir anlayış geliştirme zamanı. İçsel bilgi ve derinlik arayışı, finansal kararlarınızda size rehberlik edecektir. Doğru yolun bulunmasında sabırlı ve dikkatli olun.',
+    },
+	     'İMPARATORİÇE': {
+        'PARA': 'Yatırımlarınızı artırın, bolluk ve bereket dönemi. Finansal hayatınızda bolluk ve bereketin kapıları aralanıyor. Yatırımlarınız ve projeleriniz üzerinde yaratıcı bir dokunuşla büyük başarılar elde etmeniz mümkün. Şu an, içsel zenginliğinizi dış dünyaya yansıtma zamanı!',
+    },
+	     'İMPARATOR': {
+        'PARA': 'Finansal düzeni ve disiplini sağlayın. Güçlü bir mali yönetim ve sağlam bir stratejiyle finansal başarıyı yakalamak üzeresiniz. Düzen ve disiplinle ilerleyerek, finansal hedeflerinize ulaşmak için mükemmel bir dönemdesiniz. Gücünüzü ve kararlılığınızı kullanın.',
+    },
+	     'AZİZ': {
+        'PARA': 'Geleneksel finansal yöntemleri uygulayın. Finansal yolculuğunuzda ahlaki ve manevi değerler ön planda olacak. Dürüst ve etik bir yaklaşım benimseyerek finansal kararlarınızı yönlendirin. Bu, uzun vadede size büyük fayda sağlayacaktır.',
+    },
+	     'AŞIKLAR': {
+        'PARA': 'İşbirlikleri ve ortaklıklar faydalı olabilir. Para konularında önemli kararlar almanız gereken bir dönemde olabilirsiniz. Bu kararlar kişisel değerlerinize ve ilişkilerinize uygun olmalıdır. Kararlarınızdaki uyum, uzun vadede başarıyı getirecektir.',
+    },
+	     'ARABA': {
+        'PARA': 'Mali hedeflerinize odaklanın, başarılı olabilirsiniz. Mali başarılar için enerjinizi ve kararlılığınızı en üst düzeye çıkarın. Bu dönemde, finansal hedeflerinize ulaşma yolunda güçlü bir ivme yakalayabilirsiniz. Dikkatli planlamalarla istediğiniz sonuçları elde edeceksiniz.',
+    },
+	     'GÜÇ': {
+        'PARA': 'Kararlı ve güçlü mali adımlar atın. Mali alanda güçlü bir duruş sergiliyorsunuz. Zorlu durumları ve engelleri aşmak için içsel gücünüzü ve cesaretinizi kullanın. Bu süreçte, finansal başarılarınızı sağlam temellere oturtma şansınız var.',
+    },
+	     'ERMİŞ': {
+        'PARA': 'Bilgeliğinize güvenin, uzun vadeli stratejiler geliştirin. İçsel bilgelik ve sezgi, finansal kararlarınızda size rehberlik edecek. Uzun vadeli bir perspektif geliştirmeye odaklanarak, gelecekteki finansal başarılarınızı sağlam temellere oturtabilirsiniz.',
+    },
+	     'KADER ÇARKI': {
+        'PARA': 'Finansal değişimlere uyum sağlayın, fırsatları değerlendirin. Finansal durumunuzda büyük değişimler ve dönüşümler yaşanabilir. Şansa açık olun ve değişikliklere uyum sağlamaya çalışın. Bu dönem, size yeni fırsatlar ve gelişmeler getirecektir.',
+    },
+	     'ADALET': {
+        'PARA': 'Mali kararlarınızda adil ve dengeli olun. Mali kararlarınızda adil ve dengeli bir yaklaşım benimseyin. Şeffaf ve hesaplı davranarak, uzun vadede finansal dengeyi sağlayabilirsiniz.',
+    },
+	     'ASILAN ADAM': {
+        'PARA': 'Mali alanda sabırlı olun, geçici zorluklara göğüs gerin. Finansal durumunuzda bir bekleme ve değerlendirme sürecindesiniz. Bu dönemde sabırlı ve dikkatli olun. İçsel bir anlayış geliştirerek, gelecekte daha sağlam adımlar atmak için hazırlık yapabilirsiniz.',
+    },
+	     'ÖLÜM': {
+        'PARA': 'Eski finansal alışkanlıkları bırakın, yeniliklere açık olun. Finansal hayatınızda köklü ve devrim niteliğinde bir değişim başlıyor! Eski mali alışkanlıklarınızı geride bırakma zamanı. Bu dönüşüm, size yepyeni ve kazançlı fırsatlar sunacak. Hazırlanın, finansal geleceğinizde büyük bir yenilik kapıda!',
+    },
+	     'DENGE': {
+        'PARA': 'Gelir ve gider dengesini koruyun. Finansal anlamda denge ve uyum sağlamak, sizi daha güçlü kılacak. Gelir ve giderlerinizi dikkatlice dengeleyerek, mali istikrarınızı sürdürebilirsiniz. Bu denge, size huzur ve güven getirecektir.',
+    },
+	     'ŞEYTAN': {
+        'PARA': 'Tüketim alışkanlıklarınıza dikkat edin, aşırılıklardan kaçının. Mali anlamda bağımlılık ve aşırılıklardan uzak durmanız gereken bir dönemde olabilirsiniz. Kontrolünüzü kaybetmeden, finansal kararlarınızı dikkatli bir şekilde yönlendirin. Kendinizi yeniden değerlendirme zamanı.',
+    },
+	     'YIKILAN KULE': {
+        'PARA': 'Ani mali değişimlere ve beklenmedik olaylara hazırlıklı olun, yenilikçi çözümler bulun. Bu dönem, eski alışkanlıkların ve sistemlerin yıkılmasını getirebilir. Ancak, bu yıkımın ardından yeni fırsatlar ve taze başlangıçlar sizi bekliyor olabilir.',
+    },
+	     'YILDIZ': {
+        'PARA': 'Umutlu ve iyimser bir finansal dönemdesiniz, hedeflerinize odaklanın. Mali alanda umut ve ilham dolu bir dönemdesiniz. Uzun vadeli hedeflerinize ulaşmak için motivasyon ve iyimserlik bulacaksınız. Bu ışık, sizi finansal başarıya taşıyacak.',
+    },
+	     'AY': {
+        'PARA': 'Belirsizliklere dikkat edin, netlik sağlayın. Mali durumunuzda belirsizlikler ve gizli etkenlerle karşılaşabilirsiniz. Ancak, bu dönemde içsel sezgilerinize ve manevi rehberliğinize güvenerek doğru yolda ilerleyeceksiniz. Sakin kalın ve finansal kararlarınızı derinlemesine değerlendirin.',
+    },
+	     'GÜNEŞ': {
+        'PARA': 'Finansal olarak olumlu bir dönemde olabilirsiniz. Mali anlamda parlak ve olumlu bir döneme girmiş bulunuyorsunuz. Şans ve başarı sizinle. Şimdi, fırsatları değerlendirmek ve finansal hayallerinizi gerçekleştirmek için mükemmel bir zaman.',
+    },
+	     'MAHKEME': {
+        'PARA': 'Mali geçmişi değerlendirin, yeni başlangıçlar yapın. Finansal geçmişinizle yüzleşme ve yenilenme zamanı! Eski mali hataları ve eksiklikleri gözden geçirerek, gelecekte daha sağlam bir temel oluşturabilirsiniz. ',
+    },
+	     'DÜNYA': {
+        'PARA': 'Finansal tamamlanma ve başarıyı kutlayın. Finansal başarılarınızı taçlandırdığınız ve tamamladığınız bir dönemde olabilirsiniz. Uzun vadeli çabalarınızın meyvelerini toplamak üzere olduğunuz bu zamanda, tam bir tatmin ve başarı hissi yaşayacaksınız.',
+    },
+	
+	
+	     'KILIÇ ASI': {
+        'PARA': 'Net ve yeni finansal fırsatları değerlendirin. Mali açıdan net bir anlayışa sahip olacaksınız. Bu dönem, sorunları açık bir şekilde görüp çözüm bulmak için uygun.',
+    },
+	     'KILIÇ İKİLİSİ': {
+        'PARA': 'Karar verme aşamasında dikkatli olun. Mali konularda belirsizlik veya iki seçenek arasında kalma durumu olabilir. Karar vermeden önce tüm bilgileri toplamak ve iyi düşünmek önemli.',
+    },
+	     'KILIÇ ÜÇLÜSÜ': {
+        'PARA': 'Mali üzüntüler geçici olabilir, sabırlı olun. Mali konularda küçük bir aksaklıklar yaşanabilir. Bu, geçici bir durum olup, zamanla düzelecektir. Şu anda kendinizi toparlamaya ve destek aramaya odaklanabilirsiniz.',
+    },
+	     'KILIÇ DÖRTLÜSÜ': {
+        'PARA': 'Finansal olarak dinlenmeye ve değerlendirmeye zaman ayırın. Mali olarak dinlenmeye ve düşünmeye ihtiyaç duyduğunuz bir dönemdesiniz. Finansal planlarınızı gözden geçirip, biraz ara vermek iyi olabilir.',
+    },
+	     'KILIÇ BEŞLİSİ': {
+        'PARA': 'Küçük kayıplardan ders çıkarın. Mali olarak küçük hayal kırıklıkları yaşanabilir. Ancak bu süreç, öğrenme ve gelişim fırsatı sunar. Gelecekte daha sağlam adımlar atmanıza yardımcı olabilir.',
+    },
+	     'KILIÇ ALTILISI': {
+        'PARA': 'Eski sorunlardan uzaklaşın, iyileşme dönemi. Eski finansal sorunlardan uzaklaşıp daha iyi bir duruma geçiş yapıyorsunuz. Bu değişim size rahatlama getirebilir.',
+    },
+	     'KILIÇ YEDİLİSİ': {
+        'PARA': 'Yanıltıcı fırsatlara dikkat edin, araştırma yapın. Mali alanda dikkatli olmanız gereken bir dönemde olabilirsiniz. Yanıltıcı fırsatlara karşı dikkatli olun ve iyi araştırma yapın.',
+    },
+	     'KILIÇ SEKİZLİSİ': {
+        'PARA': 'Mali kısıtlamalara dikkat edin, çözüm yolları bulun. Mali olarak kısıtlanmış veya sınırlı hissedebilirsiniz. Bu durumda, çözümler bulmak için yaratıcı ve dikkatli olmanız gerekebilir.',
+    },
+	     'KILIÇ DOKUZLUSU': {
+        'PARA': 'Finansal kaygılardan kaçının, rahatlama yolları arayın. Mali kaygılar ve endişeler olabilir. Bu dönemde rahatlamak ve stresle başa çıkmak için zaman ayırmak faydalı olabilir. Kısa süreli zorlukların ardından rahatlama yaşanabilir.',
+    },
+	     'KILIÇ ONLUSU': {
+        'PARA': 'Mali yükler geçici olabilir, sabırlı kalın. Mali olarak bazı zorluklarla karşılaşabilirsiniz. Bu durum, geçici bir yük olarak kabul edilebilir. Sorunları çözmek için sabırlı ve kararlı olun; zamanla iyileşeceksiniz.',
+    },
+	     'KILIÇ PRENSİ': {
+        'PARA': 'Hızlı ve etkili finansal hareketler yapın. Mali konularda hızlı değişiklikler olabilir. Bu dönemde, enerjinizi ve karar verme yeteneğinizi kullanarak sorunları çözmeye çalışın.',
+    },
+	     'KILIÇ ŞÖVALYESİ': {
+        'PARA': 'Cesur ve kararlı kararlar alın. Mali meselelerde cesur ve kararlı bir şekilde hareket edeceksiniz. Hızlı ve etkili kararlar almak finansal başarıyı getirebilir.',
+    },
+	     'KILIÇ KRALİÇESİ': {
+        'PARA': 'Mantıklı ve objektif finansal yönetim uygulayın. Mali konularda net bir görüş ve analiz yeteneği sergileyeceksiniz. Mantıklı ve objektif kararlarla finansal sorunları aşabilirsiniz.',
+    },
+	     'KILIÇ KRALI': {
+        'PARA': 'Stratejik ve güçlü mali kararlar verin. Mali alanda güçlü ve stratejik bir liderlik göstereceksiniz. Mantıklı ve planlı hareket ederek finansal başarıyı elde edebilirsiniz.',
+    },	
+	
+	
+	     'KUPA ASI': {
+        'PARA': 'Yeni ve heyecan verici finansal fırsatlar keşfedin. Finansal olarak yeni ve heyecan verici fırsatlar kapıda. Bu dönem, yeni başlangıçlar ve finansal projeler için uygun bir zaman olabilir.',
+    },
+	     'KUPA İKİLİSİ': {
+        'PARA': 'şbirlikleri mali başarıyı artırabilir. Finansal alanda başarılı bir işbirliği veya ortaklık dönemi olabilir. Birlikte çalışarak ortak hedeflerinize ulaşabilirsiniz.',
+    },
+	     'KUPA ÜÇLÜSÜ': {
+        'PARA': 'Sosyal etkinlikler ve kutlamalar faydalı olabilir. Finansal açıdan keyifli bir zaman dilimi. Sosyal etkinlikler ve kutlamalar, finansal başarınızı artırabilir ve ruh halinizi iyileştirebilir.',
+    },
+	     'KUPA DÖRTLÜSÜ': {
+        'PARA': 'Mevcut durumu gözden geçirin, yeniliklere açık olun. Finansal alanda mevcut durumdan memnuniyetsizlik hissedebilirsiniz. Bu dönem, yeni fırsatlar ve değişikliklere açık olmanız gereken bir süreç olabilir.',
+    },
+	     'KUPA BEŞLİSİ': {
+        'PARA': 'Kayıplardan ders çıkarın, yeni fırsatlara odaklanın. Mali konularda küçük bir aksaklıklar yaşanabilir. Ancak bu durum, geçici olabilir ve yeni fırsatlarla birlikte iyileşme şansı sunar. Olumlu bir bakış açısıyla yaklaşarak bu süreçten ders çıkarmak önemlidir.',
+    },
+	     'KUPA ALTILISI': {
+        'PARA': 'Geçmiş başarıları hatırlayın, bu deneyimler faydalı olabilir. Geçmiş finansal başarılarınızı ve deneyimlerinizi hatırladığınız bir dönemdesiniz. Bu hatıralar, sizi gelecekte daha iyi mali kararlar almaya yönlendirebilir.',
+    },
+	     'KUPA YEDİLİSİ': {
+        'PARA': 'Farklı finansal seçenekleri değerlendirin, dikkatli seçim yapın. Mali alanda birçok seçenekle karşılaşabilirsiniz. Bu dönemde, hangi fırsatların size uygun olduğuna karar verirken dikkatli düşünmeniz faydalı olabilir.',
+    },
+	     'KUPA SEKİZLİSİ': {
+        'PARA': 'Eski finansal alışkanlıklardan uzaklaşın, yeni yollar arayın. Finansal olarak mevcut durumunuzdan uzaklaşma ve yeni fırsatlara yönelme isteği duyabilirsiniz. Bu dönemde yeni başlangıçlara açık olun.',
+    },
+	     'KUPA DOKUZLUSU': {
+        'PARA': 'Finansal olarak tatmin edici bir dönemdesiniz. Finansal hedeflerinize ulaştığınız ve başarılarınızı kutlayabileceğiniz bir dönem olabilir.',
+    },
+	     'KUPA ONLUSU': {
+        'PARA': 'Uzun vadeli finansal güvenlik sağladığınız bir dönem. Mali açıdan tamamlanmış bir başarı ve güven duygusu yaşanıyor. Uzun vadeli hedeflerinizde başarı ve istikrar sağlayabilirsiniz.',
+    },
+	     'KUPA PRENSİ': {
+        'PARA': 'Genç ve yaratıcı finansal çözümler uygulayın. Finansal dünyanızda genç, enerjik ve yaratıcı bir yaklaşım sergileyeceksiniz. Bu dönemde yenilikçi çözümler ve fırsatlar karşınıza çıkabilir.',
+    },
+	     'KUPA ŞÖVALYESİ': {
+        'PARA': 'Sezgisel finansal kararlar alın, içgörülerinize güvenin. Mali alanda duygusal ve sezgisel bir yaklaşım benimseyebilirsiniz. Finansal kararlarınızı içsel hislerinize göre yönlendirmek faydalı olabilir.',
+    },
+	     'KUPA KRALİÇESİ': {
+        'PARA': 'Duygusal zekanızı kullanarak finansal yönetim yapın. Mali konularda empatik ve sezgisel bir yaklaşım sergileyeceksiniz. Bu dönemde duygusal zekânız ve içgörüleriniz, finansal kararlarınızı yönlendirebilir.',
+    },
+	     'KUPA KRALI': {
+        'PARA': 'Olgun ve güvenilir finansal kararlar verin. Mali alanda olgun, güvenilir ve lider bir yaklaşım sergileyeceksiniz. Finansal kararlarınızda deneyim ve mantığınızı kullanarak başarılı sonuçlar elde edebilirsiniz.',
+    },	
+		
+
+	     'PARA ASI': {
+        'PARA': 'Yeni ve heyecan verici finansal fırsatlar kapıda. Bu dönem, yeni projeler ve finansal başlangıçlar için uygun bir zaman olabilir.',
+    },
+	     'PARA İKİLİSİ': {
+        'PARA': 'Gelir ve gider dengesini koruyun. Mali durumunuzda denge kurmak zor olabilir. Gelir ve giderler arasında denge sağlamak için dikkatli planlama yapmanız gerekebilir.',
+    },
+	     'PARA ÜÇLÜSÜ': {
+        'PARA': 'Gelir ve gider dengesini koruyun. Mali başarınızı paylaşma ve başkalarıyla işbirliği yapma zamanı. İş ortaklıkları ve takım çalışması size finansal kazanç getirebilir.',
+    },
+	     'PARA DÖRTLÜSÜ': {
+        'PARA': 'Tasarruf yapın ve mevcut kaynakları koruyun. Mali olarak tasarruf yapma ve mevcut kaynaklarınızı koruma eğilimindesiniz. Bu dönem, birikimlerinizi güçlendirmek için uygun olabilir.',
+    },
+	     'PARA BEŞLİSİ': {
+        'PARA': 'Finansal konularda dikkatli hareket edin. Mali konularda küçük bir aksaklıklar yaşanabilir, ancak bu süreç kısa sürede geçebilir. Bu durum, size yeni fırsatlar ve iyileşme şansı sunabilir. Sabırlı ve dikkatli olarak, gelecekte daha olumlu sonuçlar elde edebilirsiniz.',
+    },
+	     'PARA ALTILISI': {
+        'PARA': 'Başkalarına yardım etmek veya destek almak faydalı olabilir. Mali açıdan başkalarına yardım etme veya yardım alma zamanı olabilir. Bu süreç, finansal destek ve karşılıklı yardımlaşmayı içerir.',
+    },
+	     'PARA YEDİLİSİ': {
+        'PARA': 'Sabırlı olun, uzun vadeli planlar yapın. Mali hedeflerinize ulaşmada sabırlı ve stratejik olmanız gerekebilir. Bu dönemde, uzun vadeli planlamalar yapmak faydalı olabilir.',
+    },
+	     'PARA SEKİZLİSİ': {
+        'PARA': 'Çalışmalarınıza odaklanın, çabalarınız karşılık bulacak. Mali alanda sıkı çalışma ve özveri gerektiren bir dönemdesiniz. Bu çabalarınız, gelecekte başarılı sonuçlar elde etmenizi sağlayacaktır.',
+    },
+	     'PARA DOKUZLUSU': {
+        'PARA': 'Finansal olarak tatmin edici bir dönemdesiniz. Mali açıdan tatmin edici bir dönem geçirebilirsiniz. Finansal hedeflerinize ulaşarak kendinizi başarılı ve güvende hissedebilirsiniz.',
+    },
+	     'PARA ONLUSU': {
+        'PARA': 'Uzun vadeli finansal güvenliği sağlayın. Mali açıdan istikrar ve güven sağladığınız bir dönemdesiniz. Uzun vadeli hedeflerinizde başarılı bir temel oluşturmuş olabilirsiniz. Bu süreç, finansal güvenliğinizin arttığı ve gelecekteki güvenliğiniz için sağlam bir zemin hazırladığı bir zaman olabilir.',
+    },
+	     'PARA PRENSİ': {
+        'PARA': 'Yaratıcı ve dinamik mali çözümler bulun. Mali alanda genç ve dinamik bir yaklaşım sergileyeceksiniz. Yaratıcı fikirler ve yenilikçi çözümlerle finansal fırsatları değerlendirebilirsiniz.',
+    },
+	     'PARA ŞÖVALYESİ': {
+        'PARA': 'Cesur ve kararlı adımlar atın. Mali konularda aktif ve kararlı bir yaklaşım sergileyeceksiniz. Hızlı hareket ederek ve fırsatları değerlendirerek finansal başarı elde edebilirsiniz.',
+    },
+	     'PARA KRALİÇESİ': {
+        'PARA': 'Duygusal zekanızı kullanarak finansal yönetim yapın. Mali konularda dikkatli ve sezgisel bir yaklaşım benimseyebilirsiniz. Duygusal zekânız ve iyi yönetim becerileriniz, finansal başarıyı destekleyecektir.',
+    },
+	     'PARA KRALI': {
+        'PARA': 'Stratejik ve güçlü mali kararlar verin. Mali alanda güçlü ve güvenilir bir liderlik sergileyeceksiniz. Stratejik düşünme ve sağlam kararlarla finansal istikrarı sağlayabilirsiniz.',
+    },	
+        
+
+	     'DEĞNEK ASI': {
+        'PARA': 'Mali açıdan yeni ve heyecan verici fırsatlar kapıda. Bu dönem, yeni projeler ve finansal başlangıçlar için uygun bir zaman olabilir.',
+    },
+	     'DEĞNEK İKİLİSİ': {
+        'PARA': 'Gelecekteki fırsatları planlayın, stratejik düşünün. Mali konularda gelecekteki fırsatları değerlendirmek üzere plan yapma zamanı. Uzun vadeli hedeflerinizi belirleyip, bunlara yönelik stratejiler geliştirebilirsiniz.',
+    },
+	     'DEĞNEK ÜÇLÜSÜ': {
+        'PARA': 'Mali büyüme için başarılı adımlar atın. Mali olarak başarılı bir planlama ve büyüme dönemi. Bu süreç, gelecekteki finansal hedeflerinize ulaşmak için sağlam adımlar atmanıza yardımcı olabilir.',
+    },
+	     'DEĞNEK DÖRTLÜSÜ': {
+        'PARA': 'İstikrar sağlayın, mevcut başarılarınızı kutlayın. Mali alanda istikrar ve güvenlik sağladığınız bir dönemdesiniz. Bu durum, finansal olarak güçlü bir temel oluşturmanızı ve rahatlamanızı sağlar.',
+    },
+	     'DEĞNEK BEŞLİSİ': {
+        'PARA': 'Mali rekabetlere dikkat edin, stratejik olun. Mali alanda rekabet veya anlaşmazlıklar yaşanabilir. Bu dönemde dikkatli olup, finansal mücadelelere karşı stratejik hareket etmek faydalı olacaktır.',
+    },
+	     'DEĞNEK ALTILISI': {
+        'PARA': 'Başarılarınızı paylaşın, finansal ödüller sizi bekliyor. Mali başarı ve tanınma dönemindesiniz. Başarılarınızı kutlayabilir ve elde ettiğiniz sonuçları paylaşabilirsiniz. Bu süreç, finansal olarak ödüllendirici olabilir.',
+    },
+	     'DEĞNEK YEDİLİSİ': {
+        'PARA': 'Sabırlı olun, uzun vadeli hedeflere odaklanın. Mali hedeflerinizde bir süredir çalışıyorsunuz ve bu süreçte sabırlı olmanız gerekebilir. Çabalarınızın karşılığını alacağınıza dair güveninizi koruyun.',
+    },
+	     'DEĞNEK SEKİZLİSİ': {
+        'PARA': 'Hızla çalışın ve odaklanın, sonuçlar başarılı olabilir. Mali konularda hızlı ve etkili bir şekilde çalışmanız gereken bir dönemdesiniz. Yoğun bir tempoda ilerlerken, hedeflerinize odaklanarak başarılı sonuçlar elde edebilirsiniz.',
+    },
+	     'DEĞNEK DOKUZLUSU': {
+        'PARA': 'Mali olarak tatmin edici bir dönem geçirebilirsiniz. Mali olarak tatmin edici bir dönem yaşamanız mümkün. Başarılarınız ve elde ettiğiniz sonuçlar, finansal güvenliğinizi artırabilir.',
+    },
+	     'DEĞNEK ONLUSU': {
+        'PARA': 'Mali yükler olabilir, güçlü bir temel oluşturun. Mali alanda bazı zorluklar veya yükler olabilir, ancak bu süreçte güçlü bir dayanışma ve destek bulabilirsiniz. Sorunlarla başa çıkmak için sağlam bir temel oluşturabilirsiniz.',
+    },
+	     'DEĞNEK PRENSİ': {
+        'PARA': 'Yaratıcı ve enerjik finansal çözümler bulun. Mali konularda genç ve dinamik bir yaklaşım sergileyeceksiniz. Yaratıcı çözümler ve enerjik bir tutum, finansal fırsatları değerlendirmek için faydalı olabilir.',
+    },
+	     'DEĞNEK ŞÖVALYESİ': {
+        'PARA': 'Cesur kararlar alın. Mali meselelerde cesur ve atılgan bir yaklaşım sergileyeceksiniz. Riskleri göze alarak ve hızlı hareket ederek finansal başarı sağlayabilirsiniz.',
+    },
+	     'DEĞNEK KRALİÇESİ': {
+        'PARA': 'Sezgisel ve stratejik finansal yönetim yapın. Mali konularda sezgisel ve stratejik bir yaklaşım benimseyeceksiniz. İçgörüleriniz ve iyi yönetim becerileriniz, finansal hedeflerinize ulaşmanıza yardımcı olabilir.',
+    },
+	     'DEĞNEK KRALI': {
+        'PARA': 'Güçlü ve stratejik mali kararlar verin. Mali alanda güçlü ve lider bir tutum sergileyeceksiniz. Stratejik düşünme ve mantıklı kararlar, finansal başarıyı destekleyecektir.',
+    },	
+		// Diğer kartlar için açıklamalar buraya eklenecek...
+        };
+
+        const container = document.querySelector('.card-container');
+        const description = document.querySelector('.description');
+        const resetButton = document.querySelector('.reset-button');
+
+        // Kartları oluştur
+        function createCard(name, index) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.dataset.name = name;
+            card.dataset.index = index;
+
+            card.addEventListener('click', function () {
+                const allCards = document.querySelectorAll('.card');
+                allCards.forEach(c => {
+                    if (c !== card) {
+                        c.classList.remove('selected');
+                    }
+                });
+
+                card.classList.toggle('selected');
+
+                // Kartın açıklamasını göster
+                if (card.classList.contains('selected')) {
+                    const cardName = card.dataset.name;
+                    const descriptions = cardDescriptions[cardName] || {
+                        PARA: 'Açıklama mevcut değil.',
+                    };
+                    description.classList.add('active');
+                    description.innerHTML = `
+                        <h2>${cardName}</h2>
+                        <p><strong></strong> ${descriptions.PARA}</p>
+                    `;
+                } else {
+                    description.classList.remove('active');
+                }
+            });
+
+            const front = document.createElement('div');
+            front.className = 'front';
+
+            const back = document.createElement('div');
+            back.className = 'back';
+            back.textContent = name;
+
+            card.appendChild(front);
+            card.appendChild(back);
+            container.appendChild(card);
+        }
+
+        function shuffleCards() {
+            const allCards = Array.from(document.querySelectorAll('.card'));
+            allCards.forEach(card => container.removeChild(card));
+
+            const shuffledNames = cardNames.sort(() => Math.random() - 0.5);
+            shuffledNames.forEach((name, index) => createCard(name, index));
+        }
+
+        // Başlangıçta kartları oluştur
+        shuffleCards();
+
+        // Kartları karıştırma butonuna tıklama olayı
+        resetButton.addEventListener('click', shuffleCards);
+    });
+</script>
+
+</body>
+</html>
